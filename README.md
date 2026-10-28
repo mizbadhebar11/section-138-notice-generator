@@ -3,7 +3,8 @@
 A free, browser-based tool that drafts a statutory demand notice for a dishonoured cheque under Section 138 of the Negotiable Instruments Act, 1881, and calculates the key deadlines.
 
 **Live demo:** https://mizbadhebar11.github.io/section-138-notice-generator/
-<img width="1377" height="733" alt="Screenshot 2026-10-28 at 2 19 07 PM" src="https://github.com/user-attachments/assets/f8e9a263-8609-4769-af59-9681dfa1252b" />
+<img width="615" height="790" alt="Screenshot 2026-10-28 at 2 23 04 PM" src="https://github.com/user-attachments/assets/76dabf30-ef3a-43a7-ad51-aad229d06907" />
+
 
 
 ## What it does
