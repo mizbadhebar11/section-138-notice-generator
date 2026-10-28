@@ -1,6 +1,6 @@
 # Section 138 Notice Generator
 
-A free, browser-based tool that drafts a statutory demand notice for a dishonoured cheque under Section 138 of the Negotiable Instruments Act, 1881, and calculates the key deadlines.
+Built by an advocate for her own cheque bounce practice. Free for anyone who needs it. A free, browser-based tool that drafts a statutory demand notice for a dishonoured cheque under Section 138 of the Negotiable Instruments Act, 1881, and calculates the key deadlines.
 
 **Live demo:** https://mizbadhebar11.github.io/section-138-notice-generator/
 <img width="615" height="790" alt="Screenshot 2026-10-28 at 2 23 04 PM" src="https://github.com/user-attachments/assets/76dabf30-ef3a-43a7-ad51-aad229d06907" />
