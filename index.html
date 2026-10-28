@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Section 138 Notice Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;600&family=Public+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f4;--panel:#fff;--ink:#14213d;--muted:#5b6578;--line:#cfd6e0;--stamp:#a4262c;--ok:#1d6b4f;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#10151f;--panel:#182030;--ink:#e8ecf4;--muted:#9aa5b8;--line:#2c3750;--stamp:#ff8a8f;--ok:#6fd1a6;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Public Sans",system-ui,sans-serif}
+header{padding:28px 20px 8px;max-width:1200px;margin:0 auto}
+h1{font:600 clamp(26px,4vw,38px)/1.15 Newsreader,Georgia,serif;margin:0 0 6px}
+header p{margin:0;color:var(--muted);max-width:60ch}
+main{display:grid;grid-template-columns:minmax(300px,420px) 1fr;gap:20px;max-width:1200px;margin:0 auto;padding:16px 20px 40px}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px}
+h2{font:600 18px Newsreader,Georgia,serif;margin:18px 0 8px}
+h2:first-child{margin-top:0}
+label{display:block;font-size:14px;color:var(--muted);margin:10px 0 3px}
+input,textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);font:inherit}
+textarea{min-height:64px;resize:vertical}
+input:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+button{font:600 14px "Public Sans",sans-serif;padding:9px 14px;border-radius:4px;border:1px solid var(--ink);background:var(--ink);color:var(--panel);cursor:pointer}
+button.alt{background:transparent;color:var(--ink)}
+#dates{list-style:none;margin:0 0 20px;padding:0;border-left:3px solid var(--ink)}
+#dates li{padding:8px 0 8px 14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#dates li span:first-child{color:var(--muted)}
+#dates strong{font-weight:600}
+#dates li.bad strong,#dates li.bad span:first-child{color:var(--stamp)}
+#dates li.good strong{color:var(--ok)}
+.note{font-size:13px;color:var(--muted);margin:0 0 18px}
+#notice{font:17px/1.65 Newsreader,Georgia,serif;white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:22px;max-width:75ch}
+footer{max-width:1200px;margin:0 auto;padding:0 20px 30px;color:var(--muted);font-size:13px}
+@media print{body{background:#fff;color:#000}header,form,#dates,.note,.btns,footer,h2.nop{display:none!important}main{display:block;padding:0}.panel{border:0;padding:0}#notice{border:0;background:#fff;color:#000;padding:0;max-width:none}}
+</style>
+</head>
+<body>
+<header>
+<h1>Section 138 Notice Generator</h1>
+<p>Fill in the cheque details. Get a draft demand notice under the Negotiable Instruments Act, 1881, and the three deadlines that follow from it.</p>
+</header>
+<main>
+<form class="panel" id="f" onsubmit="return false">
+<h2>Advocate</h2>
+<label for="advName">Name</label><input id="advName">
+<label for="advAddr">Office address</label><textarea id="advAddr"></textarea>
+<h2>Payee (your client)</h2>
+<label for="payee">Name</label><input id="payee">
+<label for="payeeAddr">Address</label><textarea id="payeeAddr"></textarea>
+<h2>Drawer (cheque issuer)</h2>
+<label for="drawer">Name</label><input id="drawer">
+<label for="drawerAddr">Address</label><textarea id="drawerAddr"></textarea>
+<h2>Liability</h2>
+<label for="liab">How the debt arose</label><textarea id="liab"></textarea>
+<h2>Cheque</h2>
+<div class="row"><div><label for="chqNo">Cheque no.</label><input id="chqNo"></div><div><label for="amount">Amount (₹)</label><input id="amount" type="number" min="1"></div></div>
+<div class="row"><div><label for="bank">Bank</label><input id="bank"></div><div><label for="branch">Branch</label><input id="branch"></div></div>
+<label for="chqDate">Date on cheque</label><input id="chqDate" type="date">
+<h2>Dishonour</h2>
+<div class="row"><div><label for="presDate">Presented on</label><input id="presDate" type="date"></div><div><label for="memoDate">Return memo date</label><input id="memoDate" type="date"></div></div>
+<label for="reason">Reason on memo</label><input id="reason">
+<h2>Notice</h2>
+<div class="row"><div><label for="noticeDate">Notice date</label><input id="noticeDate" type="date"></div><div><label for="place">Place</label><input id="place"></div></div>
+<div class="btns"><button type="button" id="sample">Load sample data</button><button type="button" class="alt" id="clear">Clear</button></div>
+</form>
+<section class="panel">
+<h2>Deadlines</h2>
+<ul id="dates"></ul>
+<p class="note">Counted from the dates you entered. The 15-day period runs from the drawer’s receipt of the notice, so update the notice date to the date of receipt if you know it. Confirm every date before filing.</p>
+<h2 class="nop">Draft notice</h2>
+<div id="notice"></div>
+<div class="btns"><button type="button" id="copy">Copy notice</button><button type="button" class="alt" id="print">Print</button></div>
+</section>
+</main>
+<footer>Draft generator only. Not legal advice. Everything stays in your browser; nothing is sent or stored.</footer>
+<script>
+const $=id=>document.getElementById(id);
+const ids=["advName","advAddr","payee","payeeAddr","drawer","drawerAddr","liab","chqNo","amount","bank","branch","chqDate","presDate","memoDate","reason","noticeDate","place"];
+const sample={advName:"Mizba Dhebar",advAddr:"Chamber 12, Court Complex, New Delhi - 110001",payee:"Sharma Traders Pvt. Ltd.",payeeAddr:"21, Industrial Area, Phase 2, Jaipur, Rajasthan - 302001",drawer:"Anil Verma",drawerAddr:"45, Green Park, Indore, Madhya Pradesh - 452001",liab:"You purchased goods from my client between January and March 2026 under Invoice Nos. 118 to 124 and were liable to pay a total of the amount stated below, which you acknowledged as due.",chqNo:"004521",amount:"450000",bank:"Example Bank Ltd.",branch:"Vijay Nagar, Indore",chqDate:"2026-07-01",presDate:"2026-07-10",memoDate:"2026-07-12",reason:"Funds Insufficient",noticeDate:"2026-08-05",place:"New Delhi"};
+const ones=["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"],tens=["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+const two=n=>n<20?ones[n]:tens[Math.floor(n/10)]+(n%10?" "+ones[n%10]:"");
+const three=n=>(n>=100?ones[Math.floor(n/100)]+" Hundred"+(n%100?" ":""):"")+(n%100?two(n%100):"");
+function words(n){const p=[];const cr=Math.floor(n/1e7);n%=1e7;const lk=Math.floor(n/1e5);n%=1e5;const th=Math.floor(n/1e3);n%=1e3;if(cr)p.push(words(cr)+" Crore");if(lk)p.push(two(lk)+" Lakh");if(th)p.push(two(th)+" Thousand");if(n)p.push(three(n));return p.join(" ")}
+const inr=n=>"₹"+Number(n).toLocaleString("en-IN");
+const val=id=>$(id).value.trim();
+const d=s=>s?new Date(s+"T00:00:00"):null;
+const fmt=x=>x?x.toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"}):"[date]";
+const addDays=(x,n)=>{const y=new Date(x);y.setDate(y.getDate()+n);return y};
+function addMonths(x,m){const y=new Date(x),day=y.getDate();y.setMonth(y.getMonth()+m);if(y.getDate()!==day)y.setDate(0);return y}
+const f=(id,label)=>val(id)||"["+label+"]";
+function render(){
+const chq=d(val("chqDate")),pres=d(val("presDate")),memo=d(val("memoDate")),nd=d(val("noticeDate"));
+const rows=[];
+if(chq){const v=addMonths(chq,3);const ok=!pres||pres<=v;rows.push(["Cheque valid until (3 months)",fmt(v)+(pres?(ok?" · presented in time":" · presented late"):""),pres?(ok?"good":"bad"):""])}
+if(memo){const l=addDays(memo,30);const ok=!nd||nd<=l;rows.push(["Last day to send notice (30 days)",fmt(l)+(nd?(ok?" · in time":" · notice late"):""),nd?(ok?"good":"bad"):""])}
+if(nd){const pe=addDays(nd,15);rows.push(["Drawer’s 15 days end",fmt(pe),""]);rows.push(["Earliest day to file complaint",fmt(addDays(pe,1)),""]);rows.push(["Last day to file complaint",fmt(addMonths(addDays(pe,1),1)),"" ])}
+$("dates").innerHTML=rows.length?rows.map(r=>`<li class="${r[2]}"><span>${r[0]}</span><strong>${r[1]}</strong></li>`).join(""):"<li><span>Enter the cheque, memo and notice dates to see deadlines.</span></li>";
+const amt=val("amount")?Math.round(Number(val("amount"))):0;
+const a=amt?inr(amt)+" (Rupees "+words(amt)+" Only)":"[amount]";
+$("notice").textContent=`NOTICE UNDER SECTION 138 OF THE NEGOTIABLE INSTRUMENTS ACT, 1881
+(By Registered Post A.D. / Speed Post / Email)
+
+Date: ${fmt(nd)}
+Place: ${f("place","place")}
+
+To,
+${f("drawer","drawer name")}
+${f("drawerAddr","drawer address")}
+
+Subject: Demand for payment of ${amt?inr(amt):"[amount]"} on dishonour of Cheque No. ${f("chqNo","cheque no.")}
+
+Sir/Madam,
+
+Under instructions from and on behalf of my client, ${f("payee","payee name")}, ${f("payeeAddr","payee address")}, I serve upon you the following notice:
+
+1. ${f("liab","describe how the debt arose")}
+
+2. That in discharge of the above legally enforceable debt, you issued to my client Cheque No. ${f("chqNo","cheque no.")} dated ${fmt(chq)} for ${a}, drawn on ${f("bank","bank")}, ${f("branch","branch")}.
+
+3. That my client presented the said cheque for encashment through its bankers on ${fmt(pres)}, within the period of its validity. The cheque was returned unpaid on ${fmt(memo)} with the remark “${f("reason","reason")}”, as per the bank’s return memo.
+
+4. That the dishonour of the cheque shows that you have failed to honour your liability and that the cheque was issued without sufficient funds or arrangement with your bank.
+
+5. That you are hereby called upon to pay the cheque amount of ${a} to my client within 15 days of receipt of this notice. If you fail to do so, my client shall be constrained to initiate criminal proceedings against you under Section 138 read with Section 142 of the Negotiable Instruments Act, 1881, at your risk as to costs and consequences.
+
+6. A copy of this notice is retained in my office for record and further action.
+
+Yours faithfully,
+
+${f("advName","advocate name")}
+Advocate for ${f("payee","payee name")}
+${f("advAddr","office address")}`}
+ids.forEach(i=>$(i).addEventListener("input",render));
+$("sample").onclick=()=>{ids.forEach(i=>$(i).value=sample[i]);render()};
+$("clear").onclick=()=>{ids.forEach(i=>$(i).value="");render()};
+$("print").onclick=()=>window.print();
+$("copy").onclick=async e=>{try{await navigator.clipboard.writeText($("notice").textContent);e.target.textContent="Copied"}catch(x){e.target.textContent="Copy failed: select the text manually"}setTimeout(()=>e.target.textContent="Copy notice",2000)};
+render();
+</script>
+</body>
+</html>
